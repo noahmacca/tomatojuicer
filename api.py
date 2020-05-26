@@ -29,7 +29,111 @@ books = [
 
 USER_CONFIG = {
     'NOAH': {
-        'cal_url': 'http://p01-calendars.icloud.com/published/2/R7z0NY0Ja-eATwYdxvL0Cj5_0suPQs9_NokawvmHwpTuh04vObEvNZuL3-mYKubUqej19L4ZXAETnqZqlGuUb0bkBON4r9c7vUIHp7Ba2S0?start_date=2020-03-15'
+        'cal_url': 'http://p01-calendars.icloud.com/published/2/R7z0NY0Ja-eATwYdxvL0Cj5_0suPQs9_NokawvmHwpTuh04vObEvNZuL3-mYKubUqej19L4ZXAETnqZqlGuUb0bkBON4r9c7vUIHp7Ba2S0?start_date=2020-03-15',
+        'canonical_categories': [
+            {
+                'name': 'Work',
+                'pom_names': [
+                    "Build: Generic Forward",
+                    "Build: Generic [Forward]",
+                    "Day Prep/Planning Forward",
+                    "Day Prep/Planning [Forward]",
+                    "Meeting Forward",
+                    "Meeting: 1:1 Forward",
+                    "Meeting: 1:1 [Forward]",
+                    "Meeting: Generic Forward",
+                    "Meeting: Generic [Forward]",
+                    "Telemed ramp up Forward",
+                    "Working Forward",
+                    "Lunch Personal",
+                    "[build] Covid re-assessment Forward"
+                ],
+                'goal_hrs_week': 50 
+            },
+            {
+                'name': 'Reading',
+                'pom_names': [
+                    "Read [Personal]",
+                    "Reading Articles [Personal]",
+                    "Reading [Personal]",
+                    "Reading articles Personal",
+                    "Reading articles [Personal]",
+                    "Reading book Personal"
+                ],
+                'goal_hrs_week': 5
+            }, 
+            {
+                'name': 'Meditate',
+                'pom_names': [
+                    "Meditate [Personal]"
+                ],
+                'goal_hrs_week': 4 
+            }, 
+            {
+                'name': 'Photography',
+                'pom_names': [
+                    "Photography",
+                    "Photography [Personal]"
+                ],
+                'goal_hrs_week': 2.5
+            }, 
+            {
+                'name': 'Workout',
+                'pom_names': [
+"Workout [Personal]", "Strength Workout [Personal]"
+                ],
+                'goal_hrs_week': 3
+            }, 
+            {
+                'name': 'Writing',
+                'pom_names': [
+"Writing [Personal]"
+                ],
+                'goal_hrs_week': 2
+            }, 
+            {
+                'name': 'Cycling',
+                'pom_names': [
+"Cycling Personal", "Cycling [Personal]"
+                ],
+                'goal_hrs_week': 8
+            }, 
+            {
+                'name': 'Socializing',
+                'pom_names': [
+                    "Facetime w/ Emily [Personal]",
+                    "Hanging out with Friends [Personal]",
+                    "Hanging out with roommates [Personal]",
+                    "Hanging with Roommates [Personal]",
+                    "Hanging with roommates [Personal]",
+                    "Call Mom [Personal]",
+                    "Catch up with Friends [Personal]",
+                    "Messaging Friends [Personal]",
+                    "Message Friends [Personal]",
+                    "Talking to Family [Personal]"
+                ],
+                'goal_hrs_week': 10
+            },
+            {
+                'name': 'Side Projects',
+                'pom_names': [
+                    "Side Project [Personal]",
+                    "Side Projects [Personal]",
+                    "Side projects Personal",
+                    "Side projects [Personal]"
+                ],
+                'goal_hrs_week': 6
+            }, 
+            {
+                'name': 'Chores and Food',
+                'pom_names': [
+                    "Chores [Personal]",
+                    "Cooking and Cleaning",
+                    "Cooking and Eating [Personal]"
+                ],
+                'goal_hrs_week': 4
+            }
+        ]
     },
     'EMILY': {
         'cal_url': 'http://p01-calendars.icloud.com/published/2/MTAxNDUyODIyMTEwMTQ1MnFDAoDu9WOTPYC1M363VCgk71g1pKfKKlVbrvDkUxCHNbhp66b2q44js0X1uD3WWiP0osjL-RcA_HE6SYl1_UQ',
