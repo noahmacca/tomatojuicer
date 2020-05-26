@@ -28,7 +28,57 @@ books = [
 ]
 
 USER_CONFIG = {
-    'NOAH': {
+    'Emily': {
+        'cal_url': 'http://p01-calendars.icloud.com/published/2/MTAxNDUyODIyMTEwMTQ1MnFDAoDu9WOTPYC1M363VCgk71g1pKfKKlVbrvDkUxCHNbhp66b2q44js0X1uD3WWiP0osjL-RcA_HE6SYl1_UQ',
+        'canonical_categories': [
+            {
+                'name': 'Work',
+                'pom_names': ['Coding [Airbnb]', 'Not-coding [Airbnb]', 'Meeting [Airbnb]'],
+                'goal_hrs_week': 40
+            },
+            {
+                'name': 'Journaling',
+                'pom_names': ['Journaling [Personal]'],
+                'goal_hrs_week': 5
+            },
+            {
+                'name': 'Meditation',
+                'pom_names': ['Meditation [Personal] Default Project'],
+                'goal_hrs_week': 3
+            },
+            {
+                'name': 'Personal Website',
+                'pom_names': ['Website [Personal]', 'Website [Personal] Default Project'],
+                'goal_hrs_week': 4
+            },
+            {
+                'name': 'Cycling',
+                'pom_names': ['Cycling [Exercise]'],
+                'goal_hrs_week': 15
+            },
+            {
+                'name': 'Photo Editing',
+                'pom_names': ['Photo editing [Personal]'],
+                'goal_hrs_week': 3
+            },
+            {
+                'name': 'Coding Personal Project',
+                'pom_names': ['Coding personal project [Personal]'],
+                'goal_hrs_week': 5
+            },
+            {
+                'name': 'Drawing',
+                'pom_names': ['Art [Personal]'],
+                'goal_hrs_week': 5
+            },
+            {
+                'name': 'Handstand Practice',
+                'pom_names': ['Core Play [Exercise]', 'Aligned [Exercise]'],
+                'goal_hrs_week': 3
+            }
+        ]
+    },
+        'Noah': {
         'cal_url': 'http://p01-calendars.icloud.com/published/2/R7z0NY0Ja-eATwYdxvL0Cj5_0suPQs9_NokawvmHwpTuh04vObEvNZuL3-mYKubUqej19L4ZXAETnqZqlGuUb0bkBON4r9c7vUIHp7Ba2S0?start_date=2020-03-15',
         'canonical_categories': [
             {
@@ -132,56 +182,6 @@ USER_CONFIG = {
                     "Cooking and Eating [Personal]"
                 ],
                 'goal_hrs_week': 4
-            }
-        ]
-    },
-    'EMILY': {
-        'cal_url': 'http://p01-calendars.icloud.com/published/2/MTAxNDUyODIyMTEwMTQ1MnFDAoDu9WOTPYC1M363VCgk71g1pKfKKlVbrvDkUxCHNbhp66b2q44js0X1uD3WWiP0osjL-RcA_HE6SYl1_UQ',
-        'canonical_categories': [
-            {
-                'name': 'Work',
-                'pom_names': ['Coding [Airbnb]', 'Not-coding [Airbnb]', 'Meeting [Airbnb]'],
-                'goal_hrs_week': 40
-            },
-            {
-                'name': 'Journaling',
-                'pom_names': ['Journaling [Personal]'],
-                'goal_hrs_week': 5
-            },
-            {
-                'name': 'Meditation',
-                'pom_names': ['Meditation [Personal] Default Project'],
-                'goal_hrs_week': 3
-            },
-            {
-                'name': 'Personal Website',
-                'pom_names': ['Website [Personal]', 'Website [Personal] Default Project'],
-                'goal_hrs_week': 4
-            },
-            {
-                'name': 'Cycling',
-                'pom_names': ['Cycling [Exercise]'],
-                'goal_hrs_week': 15
-            },
-            {
-                'name': 'Photo Editing',
-                'pom_names': ['Photo editing [Personal]'],
-                'goal_hrs_week': 3
-            },
-            {
-                'name': 'Coding Personal Project',
-                'pom_names': ['Coding personal project [Personal]'],
-                'goal_hrs_week': 5
-            },
-            {
-                'name': 'Drawing',
-                'pom_names': ['Art [Personal]'],
-                'goal_hrs_week': 5
-            },
-            {
-                'name': 'Handstand Practice',
-                'pom_names': ['Core Play [Exercise]', 'Aligned [Exercise]'],
-                'goal_hrs_week': 3
             }
         ]
     }
@@ -323,7 +323,8 @@ def get_cal():
     canonical_categories = USER_CONFIG.get(user_id, {}).get('canonical_categories')
     res = {
         'sparkline_user_data': sparkline_user_data,
-        'categories': canonical_categories
+        'categories': canonical_categories,
+        'user_ids': list(USER_CONFIG.keys())
     }
 
     return jsonify(res)
