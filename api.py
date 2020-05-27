@@ -232,12 +232,28 @@ def is_this_month_or_last(d):
     first_of_last_month = (first_of_this_month - dt.timedelta(days=1)).replace(day=1)
     
     if d >= first_of_this_month:
-        return 'This Month'
+        return 'Current'
     
     if d >= first_of_last_month:
-        return 'Last Month'
+        return 'Previous'
     
     return None
+
+
+def is_this_week_or_last(d):
+    today = dt.date.today()
+    first_of_this_week = today - dt.timedelta(days=today.weekday())
+    last_of_last_week = first_of_this_week - dt.timedelta(days=1)
+    first_of_last_week = last_of_last_week - dt.timedelta(days=last_of_last_week.weekday())
+    
+    if d >= first_of_this_week:
+        return 'Current'
+    
+    if d >= first_of_last_week:
+        return 'Previous'
+    
+    return None
+
 
 def get_canonical_category(name, canonical_categories):
     name_res = name
@@ -282,7 +298,7 @@ def get_and_parse_calendar_data(user_id):
     df['end'] = df.begin.apply(lambda x: x.replace(tzinfo=None))
     return df
 
-def get_cumulative_totals_by_type(df):
+def get_cumulative_monthly_totals_by_type(df):
     end = dt.datetime.now().date()
     start = end - dt.timedelta(days=90)
 
@@ -301,10 +317,36 @@ def get_cumulative_totals_by_type(df):
     dft = df1.stack().reset_index()
     dft.rename(columns={'level_0': 'date', 0: 'hours'}, inplace=True)
     dft = dft.sort_values(by=['name', 'date'])
-    dft['is_current_or_last_month'] = dft['date'].apply(is_this_month_or_last)
-    dft = dft[dft['is_current_or_last_month'].apply(lambda x: x is not None)].copy()
-    dft['cumulative_hours_in_month'] = dft.groupby(['name', 'is_current_or_last_month'])['hours'].cumsum()
-    dft['day_of_month'] = dft['date'].dt.day
+    dft['is_current_or_last'] = dft['date'].apply(is_this_month_or_last)
+    dft = dft[dft['is_current_or_last'].apply(lambda x: x is not None)].copy()
+    dft['cumulative_hours'] = dft.groupby(['name', 'is_current_or_last'])['hours'].cumsum()
+    dft['day_indexed'] = dft['date'].dt.day
+    return dft.to_dict(orient='records')
+
+
+def get_cumulative_weekly_totals_by_type(df):
+    end = dt.datetime.now().date()
+    start = end - dt.timedelta(days=90)
+
+    dft = df[
+        (df['date'] > start) &\
+        (df['date'] <= end)
+    ]
+
+    idx = pd.date_range(dft['date'].min(), dft['date'].max())
+    dft = dft.groupby(['date', 'name'])['duration_hr'].agg(['sum']).unstack(fill_value=0)
+    dft = dft.reindex(idx, fill_value=0)
+    dft.columns = dft.columns.get_level_values(1)
+    # dft.to_csv('./pom_daily_sums_start={}_end={}.csv'.format(start, end))
+    df1 = dft.copy()
+
+    dft = df1.stack().reset_index()
+    dft.rename(columns={'level_0': 'date', 0: 'hours'}, inplace=True)
+    dft = dft.sort_values(by=['name', 'date'])
+    dft['is_current_or_last'] = dft['date'].apply(is_this_week_or_last)
+    dft = dft[dft['is_current_or_last'].apply(lambda x: x is not None)].copy()
+    dft['cumulative_hours'] = dft.groupby(['name', 'is_current_or_last'])['hours'].cumsum()
+    dft['day_indexed'] = dft['date'].dt.weekday
     return dft.to_dict(orient='records')
 
 
@@ -319,11 +361,12 @@ def get_cal():
         return {'error': 'Error: Please provide user_id'}
 
     df = get_and_parse_calendar_data(user_id)
-    sparkline_user_data = get_cumulative_totals_by_type(df)
-    canonical_categories = USER_CONFIG.get(user_id, {}).get('canonical_categories')
     res = {
-        'sparkline_user_data': sparkline_user_data,
-        'categories': canonical_categories
+        'sparkline_user_data': {
+            'monthly': get_cumulative_monthly_totals_by_type(df),
+            'weekly': get_cumulative_weekly_totals_by_type(df)
+        },
+        'categories': USER_CONFIG.get(user_id, {}).get('canonical_categories')
     }
 
     return jsonify(res)
