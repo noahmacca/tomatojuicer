@@ -399,7 +399,7 @@ def get_cal():
             'monthly': get_cumulative_monthly_totals_by_type(df),
             'weekly': get_cumulative_weekly_totals_by_type(df)
         },
-        'categories': USER_CONFIG.get(user_id, {}).get('canonical_categories')
+        'categories': USER_CONFIG.get(user_id, {}).get('canonical_categories'),
         'user_ids': list(USER_CONFIG.keys())
     }
 
