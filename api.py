@@ -271,14 +271,49 @@ def get_canonical_goal(name, canonical_categories):
     return None
 
 
+def filter_raw_cal_by_year(raw, year):
+    raw_list = raw.split('\r\n')
+    start_idx = 0
+    indexes = []
+    year_i = 0
+    t = ''
+    has_prodid = False
+    for idx, r in enumerate(raw_list):
+        if ':' not in r:
+            continue
+        items = r.split(':')
+        k, v = items[0], items[1]
+        if k == 'PRODID':
+            has_prodid = True
+        if (k=='BEGIN'):
+            t = v
+            start_idx=idx
+        if (k=='END') & (v=='VEVENT'):
+            indexes.append((start_idx, idx, v, year_i))
+        if (k=='CREATED'):
+            year_i = v[:4]
+    
+    keep_list = []
+    for i in indexes:
+        if (i[2] == 'VEVENT') & (i[3] == '2020'):
+            keep_list += raw_list[i[0]:i[1]+1]
+
+    raw_list_res = raw_list[:4] + keep_list + raw_list[-2:]
+    if has_prodid == False:
+        raw_list_res.insert(1, 'PRODID:FALLBACK_PRODID')
+    
+    return '\r\n'.join(raw_list_res)
+
+
 def get_and_parse_calendar_data(user_id):
     cal_route = USER_CONFIG.get(user_id, {}).get('cal_url')
     canonical_categories = USER_CONFIG.get(user_id, {}).get('canonical_categories')
     print('getting cal data')
     raw = requests.get(cal_route).text
     print('parsing cal data')
-    c = Calendar(raw.replace('BEGIN:VCALENDAR', 'BEGIN:VCALENDAR\r\nPRODID:noah-rocks'))
-    print('done parsing cal data')
+    raw_filtered = filter_raw_cal_by_year(raw, '2020')
+    c = Calendar(raw_filtered)
+    print('done parsing {} cal events'.format(len(c.events)))
     items = []
     for e in list(c.events):
         items.append({
@@ -311,7 +346,6 @@ def get_cumulative_monthly_totals_by_type(df):
     dft = dft.groupby(['date', 'name'])['duration_hr'].agg(['sum']).unstack(fill_value=0)
     dft = dft.reindex(idx, fill_value=0)
     dft.columns = dft.columns.get_level_values(1)
-    # dft.to_csv('./pom_daily_sums_start={}_end={}.csv'.format(start, end))
     df1 = dft.copy()
 
     dft = df1.stack().reset_index()
@@ -337,7 +371,6 @@ def get_cumulative_weekly_totals_by_type(df):
     dft = dft.groupby(['date', 'name'])['duration_hr'].agg(['sum']).unstack(fill_value=0)
     dft = dft.reindex(idx, fill_value=0)
     dft.columns = dft.columns.get_level_values(1)
-    # dft.to_csv('./pom_daily_sums_start={}_end={}.csv'.format(start, end))
     df1 = dft.copy()
 
     dft = df1.stack().reset_index()
